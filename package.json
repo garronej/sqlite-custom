@@ -1,0 +1,26 @@
+{
+  "name": "sqlite-custom",
+  "version": "0.1.0",
+  "description": "An attempt to create a convergent API for sqlite and mysql",
+  "main": "./dist/lib/index.js",
+  "types": "./dist/lib/index.d.ts",
+  "scripts": {
+    "tsc": "node ./node_modules/typescript/bin/tsc -p ./tsconfig.json",
+    "tsc-w": "node ./node_modules/typescript/bin/tsc -w -p ./tsconfig.json",
+    "test": "sudo node dist/test/index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/garronej/sqlite-custom.git"
+  },
+  "author": "Joseph Garrone",
+  "license": "MIT",
+  "dependencies": {
+    "run-exclusive": "github:garronej/run-exclusive",
+    "sqlite": "^2.9.2"
+  },
+  "devDependencies": {
+    "@types/node": "^8.9.1",
+    "typescript": "2.7.1"
+  }
+}
