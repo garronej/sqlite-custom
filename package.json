@@ -1,6 +1,6 @@
 {
   "name": "sqlite-custom",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "An attempt to create a convergent API for sqlite and mysql",
   "main": "./dist/lib/index.js",
   "types": "./dist/lib/index.d.ts",
@@ -21,6 +21,6 @@
   },
   "devDependencies": {
     "@types/node": "^8.9.1",
-    "typescript": "2.7.1"
+    "typescript": "^2.9.2"
   }
 }

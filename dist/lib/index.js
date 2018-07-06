@@ -14,8 +14,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
         while (_) try {
-            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [0, t.value];
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
                 case 0: case 1: t = op; break;
                 case 4: _.label++; return { value: op[1], done: false };
@@ -103,8 +103,8 @@ var valueAlloc;
 })(valueAlloc || (valueAlloc = {}));
 function connectAndGetApi(db_path, handleStringEncoding) {
     return __awaiter(this, void 0, void 0, function () {
+        var db, buildSetVarQuery, buildGetVarQuery, esc, buildInsertQuery, buildInsertOrUpdateQueries, query, isClosed, close;
         var _this = this;
-        var db, buildSetVarQuery, buildGetVarQuery, esc, buildInsertQuery, buildInsertOrUpdateQueries, query;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, sqlite.open(db_path, { "promise": Promise })];
@@ -174,7 +174,7 @@ function connectAndGetApi(db_path, handleStringEncoding) {
                         return sql;
                     };
                     query = runExclusive.build(function (sql) { return __awaiter(_this, void 0, void 0, function () {
-                        var queries, queriesValues, queries_1, queries_1_1, query_1, values, _a, _b, ref, results, queries_2, queries_2_1, query_2, values, rows, insert_id_prev, stmt, e_1_1, e_2, _c, e_3, _d, e_1, _e;
+                        var e_1, _a, e_2, _b, e_3, _c, queries, queriesValues, queries_1, queries_1_1, query_1, values, _d, _e, ref, results, queries_2, queries_2_1, query_2, values, rows, insert_id_prev, stmt, e_3_1;
                         return __generator(this, function (_f) {
                             switch (_f.label) {
                                 case 0:
@@ -187,27 +187,27 @@ function connectAndGetApi(db_path, handleStringEncoding) {
                                             query_1 = queries_1_1.value;
                                             values = {};
                                             try {
-                                                for (_a = __values((query_1.match(/\$[0-9]+/g) || [])), _b = _a.next(); !_b.done; _b = _a.next()) {
-                                                    ref = _b.value;
+                                                for (_d = __values((query_1.match(/\$[0-9]+/g) || [])), _e = _d.next(); !_e.done; _e = _d.next()) {
+                                                    ref = _e.value;
                                                     values[ref] = valueAlloc.retrieve(ref);
                                                 }
                                             }
-                                            catch (e_3_1) { e_3 = { error: e_3_1 }; }
+                                            catch (e_2_1) { e_2 = { error: e_2_1 }; }
                                             finally {
                                                 try {
-                                                    if (_b && !_b.done && (_d = _a.return)) _d.call(_a);
+                                                    if (_e && !_e.done && (_b = _d.return)) _b.call(_d);
                                                 }
-                                                finally { if (e_3) throw e_3.error; }
+                                                finally { if (e_2) throw e_2.error; }
                                             }
                                             queriesValues.push(values);
                                         }
                                     }
-                                    catch (e_2_1) { e_2 = { error: e_2_1 }; }
+                                    catch (e_1_1) { e_1 = { error: e_1_1 }; }
                                     finally {
                                         try {
-                                            if (queries_1_1 && !queries_1_1.done && (_c = queries_1.return)) _c.call(queries_1);
+                                            if (queries_1_1 && !queries_1_1.done && (_a = queries_1.return)) _a.call(queries_1);
                                         }
-                                        finally { if (e_2) throw e_2.error; }
+                                        finally { if (e_1) throw e_1.error; }
                                     }
                                     results = [];
                                     _f.label = 1;
@@ -248,26 +248,55 @@ function connectAndGetApi(db_path, handleStringEncoding) {
                                     return [3 /*break*/, 2];
                                 case 8: return [3 /*break*/, 11];
                                 case 9:
-                                    e_1_1 = _f.sent();
-                                    e_1 = { error: e_1_1 };
+                                    e_3_1 = _f.sent();
+                                    e_3 = { error: e_3_1 };
                                     return [3 /*break*/, 11];
                                 case 10:
                                     try {
-                                        if (queries_2_1 && !queries_2_1.done && (_e = queries_2.return)) _e.call(queries_2);
+                                        if (queries_2_1 && !queries_2_1.done && (_c = queries_2.return)) _c.call(queries_2);
                                     }
-                                    finally { if (e_1) throw e_1.error; }
+                                    finally { if (e_3) throw e_3.error; }
                                     return [7 /*endfinally*/];
                                 case 11: return [2 /*return*/, (results.length === 1) ? results[0] : results];
                             }
                         });
                     }); });
+                    isClosed = false;
+                    close = function () { return __awaiter(_this, void 0, void 0, function () {
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    if (isClosed) {
+                                        return [2 /*return*/];
+                                    }
+                                    isClosed = true;
+                                    return [4 /*yield*/, runExclusive.getPrComplete(query)];
+                                case 1:
+                                    _a.sent();
+                                    return [4 /*yield*/, db.close()];
+                                case 2:
+                                    _a.sent();
+                                    return [2 /*return*/];
+                            }
+                        });
+                    }); };
                     return [2 /*return*/, {
-                            query: query,
+                            "query": function () {
+                                var args = [];
+                                for (var _i = 0; _i < arguments.length; _i++) {
+                                    args[_i] = arguments[_i];
+                                }
+                                if (isClosed) {
+                                    throw new Error("Close have been called");
+                                }
+                                return query.apply(null, args);
+                            },
                             esc: esc,
                             buildInsertQuery: buildInsertQuery,
                             buildInsertOrUpdateQueries: buildInsertOrUpdateQueries,
                             buildSetVarQuery: buildSetVarQuery,
-                            buildGetVarQuery: buildGetVarQuery
+                            buildGetVarQuery: buildGetVarQuery,
+                            close: close
                         }];
             }
         });
@@ -276,6 +305,7 @@ function connectAndGetApi(db_path, handleStringEncoding) {
 exports.connectAndGetApi = connectAndGetApi;
 (function (connectAndGetApi) {
     function decodeOkPacketsStrings(rows) {
+        var e_4, _a;
         try {
             for (var rows_1 = __values(rows), rows_1_1 = rows_1.next(); !rows_1_1.done; rows_1_1 = rows_1.next()) {
                 var row = rows_1_1.value;
@@ -293,7 +323,6 @@ exports.connectAndGetApi = connectAndGetApi;
             }
             finally { if (e_4) throw e_4.error; }
         }
-        var e_4, _a;
     }
     connectAndGetApi.decodeOkPacketsStrings = decodeOkPacketsStrings;
 })(connectAndGetApi = exports.connectAndGetApi || (exports.connectAndGetApi = {}));

@@ -6,6 +6,7 @@ export declare type Api = {
     buildInsertOrUpdateQueries<T extends Record<string, TSql>>(table: string, values: T, table_key: (keyof T)[]): string;
     buildSetVarQuery(varName: string, varType: "integer_value" | "text_value", sql: string): string;
     buildGetVarQuery(varName: string): string;
+    close(): Promise<void>;
 };
 export declare function enableLog(): void;
 export declare function disableLog(): void;

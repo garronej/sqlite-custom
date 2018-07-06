@@ -24,6 +24,7 @@ export type Api= {
     buildGetVarQuery( 
         varName: string 
     ): string;
+    close(): Promise<void>;
 };
 
 let logEnable= false;
@@ -86,6 +87,7 @@ export async function connectAndGetApi(
 ): Promise<Api> {
 
     const db= await sqlite.open(db_path, { "promise": Promise });
+
 
     await db.get("PRAGMA foreign_keys = ON");
 
@@ -152,7 +154,7 @@ export async function connectAndGetApi(
 
             let sql = buildInsertQuery(table, values, "IGNORE");
 
-            const _eq = (key: string) => `\`${key}\`=${esc(values[key])}`;
+            const _eq = key => `\`${key}\`=${esc(values[key])}`;
 
             let not_table_key = Object.keys(values).filter(key => table_key.indexOf(key) < 0);
 
@@ -179,18 +181,18 @@ export async function connectAndGetApi(
     const query: Api["query"] = runExclusive.build(
         async (sql: string) => {
 
-            let queries = sql.split(";")
+            const queries = sql.split(";")
                 .map(query => query.replace(/^[\n]+/, "").replace(/[\n]+$/, ""))
                 .filter(part => !!part)
                 ;
 
-            let queriesValues: Record<string, TSql>[] = [];
+            const queriesValues: Record<string, TSql>[] = [];
 
-            for (let query of queries) {
+            for (const query of queries) {
 
-                let values: Record<string, TSql> = {};
+                const values: Record<string, TSql> = {};
 
-                for (let ref of (query.match(/\$[0-9]+/g) || [])) {
+                for (const ref of (query.match(/\$[0-9]+/g) || [])) {
 
                     values[ref] = valueAlloc.retrieve(ref);
 
@@ -200,11 +202,11 @@ export async function connectAndGetApi(
 
             }
 
-            let results: any[] = [];
+            const results: any[] = [];
 
-            for (let query of queries) {
+            for (const query of queries) {
 
-                let values = queriesValues.shift();
+                const values = queriesValues.shift();
 
                 if (logEnable) {
 
@@ -215,7 +217,7 @@ export async function connectAndGetApi(
 
                 if (!!query.match(/^SELECT/)) {
 
-                    let rows = await db.all(query, values);
+                    const rows = await db.all(query, values);
 
                     if (handleStringEncoding) {
 
@@ -231,7 +233,7 @@ export async function connectAndGetApi(
                         "SELECT last_insert_rowid() as insert_id_prev"
                     );
 
-                    let stmt = (await db.run(query, values))["stmt"];
+                    const stmt = (await db.run(query, values))["stmt"];
 
                     results.push({
                         "insertId": (insert_id_prev === stmt.lastID) ? 0 : stmt.lastID,
@@ -246,14 +248,39 @@ export async function connectAndGetApi(
 
         }
     );
+    
+    let isClosed= false;
+
+    const close = async () => {
+
+        if( isClosed ){
+            return;
+        }
+
+        isClosed=true;
+
+        await runExclusive.getPrComplete(query);
+
+        await db.close();
+
+    };
 
     return {
-        query,
+        "query": (...args)=> {
+
+            if( isClosed ){
+                throw new Error("Close have been called");
+            }
+
+            return query.apply(null, args);
+
+        },
         esc,
         buildInsertQuery,
         buildInsertOrUpdateQueries,
         buildSetVarQuery,
-        buildGetVarQuery
+        buildGetVarQuery,
+        close
     };
 
 }
