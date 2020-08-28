@@ -1,6 +1,6 @@
 {
   "name": "sqlite-custom",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "An attempt to create a convergent API for sqlite and mysql",
   "main": "./dist/lib/index.js",
   "types": "./dist/lib/index.d.ts",
@@ -16,7 +16,7 @@
   "author": "Joseph Garrone",
   "license": "MIT",
   "dependencies": {
-    "run-exclusive": "github:garronej/run-exclusive",
+    "run-exclusive": "^2.2.14",
     "sqlite": "^2.9.2"
   },
   "devDependencies": {
